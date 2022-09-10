@@ -58,6 +58,7 @@ def logout_request(request):
 def registration_request(request):
     context = {}
     if request.method == 'GET':
+        print("here!!!")
         return render(request, 'djangoapp/registration.html', context)
     elif request.method == 'POST':
         username = request.POST['username']
