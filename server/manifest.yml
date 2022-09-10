@@ -1,10 +1,10 @@
   applications:
-  - name: djangoapp
+  - name: zyccapstone
     routes:
       - route: zyccapstone.eu-gb.mybluemix.net
     memory: 128M
     buildpack: python_buildpack
-  - name: djangoapp-nginx
+  - name: zyccapstone-nginx
     routes:
       - route: zyccapstone.eu-gb.mybluemix.net/static
     memory: 128M
