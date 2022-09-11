@@ -71,7 +71,8 @@ class DealerReview(self, dealership, id_, name, purchase, review, purchase_date,
     this.car_make = car_make
     this.car_model = car_model
     this.car_year = car_year
-
+    this.sentiment = 
+    
     def __str__(self):
         return ""
 
