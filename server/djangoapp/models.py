@@ -61,7 +61,7 @@ class CarDealer(self, address, city, full_name, id_, lat, long_, short_name, st,
         return "Dealer name: " + self.full_name
 
 # <HINT> Create a plain Python class `DealerReview` to hold review data
-class DealerReview(self, dealership, id_, name, purchase, review, purchase_date, car_make, car_model, car_year):
+class DealerReview(self, dealership, id_, name, purchase, review, purchase_date, car_make, car_model, car_year, sentiment):
     this.dealership = dealership
     this.id_ = id_
     this.name = name 
@@ -71,7 +71,7 @@ class DealerReview(self, dealership, id_, name, purchase, review, purchase_date,
     this.car_make = car_make
     this.car_model = car_model
     this.car_year = car_year
-    # this.sentiment = 
+    this.sentiment = sentiment
     
     def __str__(self):
         return ""
