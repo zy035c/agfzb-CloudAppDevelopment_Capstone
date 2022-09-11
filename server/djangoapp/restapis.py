@@ -11,10 +11,25 @@ def get_request(url, **kwargs):
     print(kwargs)
     print("GET from {}".format(url))
     try:
-        response = requests.get(
-            url, header={'Content-Type': 'application/json'},
-            params=kwargs
-        )
+        if api_key:
+            response = requests.get(
+                url, 
+                header={'Content-Type': 'application/json'},
+                params=kwargs,
+                auth=HTTPBasicAuth('apikey, api_key')
+            )
+        else if dealerId:
+            response = requests.get(
+                url, 
+                header={'Content-Type': 'application/json'},
+                params={'dealer_id': dealerId}, # if get review by dealer id: pass a json obj
+            )
+        else:
+            response = requests.get(
+                url, 
+                header={'Content-Type': 'application/json'},
+                params=kwargs,
+            )
     except:
         print("Network exception occued")
     status_code = response.status_code
@@ -76,7 +91,7 @@ def get_dealer_by_id_from_cf(url, dealerId):
 
 def get_dealer_reviews_from_cf(url, dealer_Id):
     result = []
-    json_result = get_request(url, dealer_Id)
+    json_result = get_request(url, dealerId=dealer_Id)
     if json_result:
         reviews = json_result["entries"]
         for review in dealers:
@@ -97,6 +112,19 @@ def get_dealer_reviews_from_cf(url, dealer_Id):
 
 # Create an `analyze_review_sentiments` method to call Watson NLU and analyze text
 def analyze_review_sentiments(text):
+    params = dict()
+    url = "https://api.us-east.natural-language-understanding.watson.cloud.ibm.com/instances/5b5d04bf-2b6e-4bdc-b714-1b848d031245"
+    api_key = "ysEVtjUvwAz7k95vINBOPwJpvarIiijqThYtfkoepnLX"
+    authenticator = IAMAuthenticator(api_key) 
+    natural_language_understanding = NaturalLanguageUnderstandingV1(version='2021-08-01',authenticator=authenticator) 
+    natural_language_understanding.set_service_url(url) 
+    response = natural_language_understanding.analyze(text, 
+        features=Features(sentiment=SentimentOptions(targets=[]))).get_result()
+    label = json.dumps(response, indent=2)
+    label = response['sentiment']['document']['label'] 
+    return label
+    
+    
 # - Call get_request() with specified arguments
 # - Get the returned sentiment label such as Positive or Negative
 
