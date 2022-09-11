@@ -98,8 +98,11 @@ def get_dealerships(request):
 
 
 # Create a `get_dealer_details` view to render the reviews of a dealer
-# def get_dealer_details(request, dealer_id):
-# ...
+def get_dealer_details(request, dealer_id):
+    if request.METHOD == "GET":
+        url = "https://eu-gb.functions.appdomain.cloud/api/v1/web/coursera-1c4_capstone-eu/dealership-package/get-review"
+        reviews = get_dealer_reviews_from_cf(url, dealer_id)
+        return HttpResponse(reviews)
 
 # Create a `add_review` view to submit a review
 def add_review(request, dealer_id):
