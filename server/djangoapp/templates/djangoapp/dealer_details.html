@@ -46,21 +46,25 @@
     </nav>
     <!-- Add reviews as cards -->
     <div class="card-columns">
-        {% for review in review_list %}
+        <h3>Reviews for {{ review_list[0].name }}</h3>
+        {% for reviewobj in review_list %}
         <div class="card">
-            {% if review.sentiment is positive %}
+            {% if reviewobj.sentiment is positive %}
             <img class="card-img-left" src="{{ MEDIA_URL }}/emoji/positive.png">
-            {% elif review.sentiment is negative %}
+            {% elif reviewobj.sentiment is negative %}
             <img class="card-img-left" src="{{ MEDIA_URL }}/emoji/negative.png">      
             {% else %}
             <img class="card-img-left" src="{{ MEDIA_URL }}/emoji/neutral.png">    
             {% endif %}
             
             <div class="card-body">
-                <card-title>{{ review. }}</card-title>
-                <card-title></card-title>
-                <card-title></card-title>
+                <card-title>{{ reviewobj.car_make }}, {{ reviewobj.car_model }}</card-title>
+                <card-title>{{ reviewobj.car_year }}</card-title>
+                <card-text>{{ reviewobj.review }}</card-text>
+            </div>
         {% endfor %}
+        </div>
+    </div>
 </body>
 
 </html>
