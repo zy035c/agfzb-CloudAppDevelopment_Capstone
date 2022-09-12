@@ -46,33 +46,35 @@ class CarModel(models.Model):
 
 
 # <HINT> Create a plain Python class `CarDealer` to hold dealer data
-class CarDealer(self, address, city, full_name, id_, lat, long_, short_name, st, zip_):
-    self.address = address
-    self.city = city
-    self.full_name = full_name
-    self.id_ = id_
-    self.lat = lat
-    self.long_ = long_
-    self.short_name = short_name
-    self.st = st
-    self.zip_ = zip_
+class CarDealer:
+    def __init__(self, address, city, full_name, id_, lat, long_, short_name, st, zip_):
+        self.address = address
+        self.city = city
+        self.full_name = full_name
+        self.id_ = id_
+        self.lat = lat
+        self.long_ = long_
+        self.short_name = short_name
+        self.st = st
+        self.zip_ = zip_
     
     def __str__(self):
         return "Dealer name: " + self.full_name
 
 # <HINT> Create a plain Python class `DealerReview` to hold review data
-class DealerReview(self, dealership, id_, name, purchase, review, purchase_date, car_make, car_model, car_year):
-    this.dealership = dealership
-    this.id_ = id_
-    this.name = name 
-    this.purchase = purchase
-    this.review = review 
-    this.purchase_date = purchase_date
-    this.car_make = car_make
-    this.car_model = car_model
-    this.car_year = car_year
-    this.sentiment = None
+class DealerReview:
+    def __init__(self, dealership, id_, name, purchase, review, purchase_date, car_make, car_model, car_year):
+        this.dealership = dealership
+        this.id_ = id_
+        this.name = name 
+        this.purchase = purchase
+        this.review = review 
+        this.purchase_date = purchase_date
+        this.car_make = car_make
+        this.car_model = car_model
+        this.car_year = car_year
+        this.sentiment = None
     
     def __str__(self):
-        return ""
+        return self.car_make + " " + self.car_model + " " + self.name
 
