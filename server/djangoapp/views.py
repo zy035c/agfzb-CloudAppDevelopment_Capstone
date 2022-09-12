@@ -119,7 +119,17 @@ def add_review(request, dealer_id):
             review = dict()
             review["time"] = datetime.utcnow().isoformat()
             review["dealership"] = dealer_id
-            review["review"] = request.text
+            review["name"] = username
+            review["review"] = request.POST["content"]
+            review["purchase"] = False
+            if "purchasecheck" in request.POST:
+                if request.POST["purchasecheck"] == 'on':
+                    review["purchase"] = True
+            review["purchase_date"] = request.POST["purchasedate"]
+            review["car_make"] = car.make.name
+            review["car_model"] = car.name
+            review["car_year"] = int(car.year.strftime("%Y"))
+            
             json_payload = dict()
             json_payload["review"] = review
             response = post_request(url=post_url, payload=json_payload)
