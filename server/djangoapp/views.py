@@ -115,7 +115,7 @@ def add_review(request, dealer_id):
     if not request.user.is_authenticated:
         redirect('djangoapp/registration.html')
     else:
-        if (request.METHOD == "POST"):
+        if request.METHOD == "POST":
             review = dict()
             review["time"] = datetime.utcnow().isoformat()
             review["dealership"] = dealer_id
@@ -136,3 +136,8 @@ def add_review(request, dealer_id):
             print(response)
             return redirect("djangoapp:dealer_details", dealer_id)
         # this redirect will be routed to get_dealer_detailers() above
+        elif request.METHOD == "GET":
+            cars = CarModel.objects.filter(id=dealer_id)
+            print(cars)
+            context["cars"] = cars
+            return render(request, 'djangoapp/add_review.html', context)
