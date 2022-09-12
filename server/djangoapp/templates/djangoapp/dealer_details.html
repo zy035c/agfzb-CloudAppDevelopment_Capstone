@@ -48,8 +48,19 @@
     <div class="card-columns">
         {% for review in review_list %}
         <div class="card">
-            <img class="card-img-left src="{{  }}/emoji/positive.png">
-        {endfor}
+            {% if review.sentiment is positive %}
+            <img class="card-img-left" src="{{ MEDIA_URL }}/emoji/positive.png">
+            {% elif review.sentiment is negative %}
+            <img class="card-img-left" src="{{ MEDIA_URL }}/emoji/negative.png">      
+            {% else %}
+            <img class="card-img-left" src="{{ MEDIA_URL }}/emoji/neutral.png">    
+            {% endif %}
+            
+            <div class="card-body">
+                <card-title>{{ review. }}</card-title>
+                <card-title></card-title>
+                <card-title></card-title>
+        {% endfor %}
 </body>
 
 </html>
