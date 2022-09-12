@@ -14,28 +14,16 @@ import time
 def get_request(url, **kwargs):
     print(kwargs)
     print("GET from {}".format(url))
-    try:
-        if api_key:
-            response = requests.get(
-                url, 
-                header={'Content-Type': 'application/json'},
-                params=kwargs,
-                auth=HTTPBasicAuth('apikey, api_key')
-            )
-        else if dealerId:
-            response = requests.get(
-                url, 
-                header={'Content-Type': 'application/json'},
-                params={'dealer_id': dealerId}, # if get review by dealer id: pass a json obj
-            )
-        else:
-            response = requests.get(
-                url, 
-                header={'Content-Type': 'application/json'},
-                params=kwargs,
-            )
-    except:
-        print("Network exception occured")
+    print("kwawgs ")
+    print(kwargs)
+    response = requests.get(
+        url, 
+        headers={'Content-Type': 'application/json'},
+        params=kwargs,
+    )
+    print(response)
+ 
+    # print("Network exception occured")
     status_code = response.status_code
     print("With status {}".format(status_code))
     json_data = json.loads(response.text)
@@ -45,13 +33,12 @@ def get_request(url, **kwargs):
 # e.g., response = requests.post(url, params=kwargs, json=payload)
 def post_request(url, payload, **kwargs):
     print(kwargs)
+    status_code = 0
     print("POST to {}".formate(url))
-    try:
-        response = requests.post(url, params=kwargs, json=payload)
-    except:
-        print("Network exception occured")
+    response = requests.post(url, params=kwargs, json=payload)
+    # print("Network exception occured")
     status_code = response.status_code
-    print("With status {}.format(status_code))
+    print("With status {}".format(status_code))
     json_data = json.lodas(response.text)
     return json_data
 
@@ -63,13 +50,12 @@ def get_dealers_from_cf(url, **kwargs):
     results = []
     json_result = get_request(url)
     if json_result:
-        dealer = json_result["entries"]
+        dealers = json_result["entries"]
         for dealer_doc in dealers:
-            # dealer_doc = dealer
             dealer_obj = CarDealer(
                 address = dealer_doc["address"],
                 city = dealer_doc["city"],
-                full_name = dealer_doc["full_name"],
+                name = dealer_doc["full_name"],
                 id_ = dealer_doc["id"],
                 lat = dealer_doc["lat"], 
                 long_ = dealer_doc["long"],
@@ -92,8 +78,8 @@ def get_dealer_by_id_from_cf(url, dealerId):
 # - Call get_request() with specified arguments
 # - Parse JSON results into a DealerView object list
 def get_dealer_reviews_from_cf(url, dealer_Id):
-    result = []
-    json_result = get_request(url, dealerId=dealer_Id)
+    results = []
+    json_result = get_request(url, dealer_id=dealer_Id)
     if json_result:
         reviews = json_result["entries"]
         for review in reviews:

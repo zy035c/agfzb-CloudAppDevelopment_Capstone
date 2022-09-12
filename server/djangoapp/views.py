@@ -9,6 +9,8 @@ from django.contrib import messages
 from datetime import datetime
 import logging
 import json
+from .restapis import get_dealer_reviews_from_cf, post_request, get_dealers_from_cf
+from .models import CarDealer, CarMake, CarModel, DealerReview
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
@@ -58,7 +60,7 @@ def logout_request(request):
 def registration_request(request):
     context = {}
     if request.method == 'GET':
-        print("here!!!")
+        # print("here!!!")
         return render(request, 'djangoapp/registration.html', context)
     elif request.method == 'POST':
         username = request.POST['username']
@@ -87,8 +89,9 @@ def registration_request(request):
 
 # Update the `get_dealerships` view to render the index page with a list of dealerships
 def get_dealerships(request):
+    context = {}
     if request.method == "GET":
-        url = "https://eu-gb.functions.appdomain.cloud/api/v1/web/coursera-1c4_capstone-eu/dealership-package/get-dealership"
+        url = "https://eu-gb.functions.appdomain.cloud/api/v1/web/coursera-1c4_capstone-eu/dealership-package/get-dealership.json"
         # Get dealers from the URL
         dealerships = get_dealers_from_cf(url)
         # Concat all dealer's short name
@@ -100,17 +103,17 @@ def get_dealerships(request):
 # Create a `get_dealer_details` view to render the reviews of a dealer
 def get_dealer_details(request, dealer_id):
     context = {}
-    if request.METHOD == "GET":
-        url = "https://eu-gb.functions.appdomain.cloud/api/v1/web/coursera-1c4_capstone-eu/dealership-package/get-review"
-        reviews = get_dealer_reviews_from_cf(url, dealer_id)
-        context['review_list'] = reviews
-        render(request, 'djangoapp/dealer_details.html', context) # also sentiment?
+    
+    url = "https://eu-gb.functions.appdomain.cloud/api/v1/web/coursera-1c4_capstone-eu/dealership-package/get-review.json"
+    reviews = get_dealer_reviews_from_cf(url, dealer_id)
+    context['review_list'] = reviews
+    render(request, 'djangoapp/dealer_details.html', context) # also sentiment?
 
     
 # Create a `add_review` view to submit a review
 def add_review(request, dealer_id):    
     context = {}    
-    url = "https://eu-gb.functions.appdomain.cloud/api/v1/web/coursera-1c4_capstone-eu/dealership-package/post-review"
+    url = "https://eu-gb.functions.appdomain.cloud/api/v1/web/coursera-1c4_capstone-eu/dealership-package/post-review.json"
     
     if not request.user.is_authenticated:
         redirect('djangoapp/registration.html')

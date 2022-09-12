@@ -1,6 +1,8 @@
 from django.db import models
 from django.utils.timezone import now
-
+from django.core import serializers
+import uuid
+import json
 
 # Create your models here.
 
@@ -10,7 +12,7 @@ from django.utils.timezone import now
 # - Any other fields you would like to include in car make model
 # - __str__ method to print a car make object
 class CarMake(models.Model):
-    name = models.CharField(null=False, max_length=20, default='')
+    name = models.CharField(null=False, max_length=20, default='', primary_key=True)
     description = models.CharField(null=False, max_length=2000, default='')
 
     def __str__(self):
@@ -47,10 +49,10 @@ class CarModel(models.Model):
 
 # <HINT> Create a plain Python class `CarDealer` to hold dealer data
 class CarDealer:
-    def __init__(self, address, city, full_name, id_, lat, long_, short_name, st, zip_):
+    def __init__(self, address, city, name, id_, lat, long_, short_name, st, zip_):
         self.address = address
         self.city = city
-        self.full_name = full_name
+        self.name = name
         self.id_ = id_
         self.lat = lat
         self.long_ = long_
@@ -59,7 +61,7 @@ class CarDealer:
         self.zip_ = zip_
     
     def __str__(self):
-        return "Dealer name: " + self.full_name
+        return "Dealer name: " + self.name
 
 # <HINT> Create a plain Python class `DealerReview` to hold review data
 class DealerReview:
@@ -77,4 +79,8 @@ class DealerReview:
     
     def __str__(self):
         return self.car_make + " " + self.car_model + " " + self.name
+
+    def to_json(self):
+        return json.dumps(self, default=lambda o: o.__dict__, sort_keys=True, indent=4)
+
 
