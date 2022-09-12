@@ -110,7 +110,7 @@ def add_review(request, dealer_id):
     context = {}    
     url = "https://eu-gb.functions.appdomain.cloud/api/v1/web/coursera-1c4_capstone-eu/dealership-package/post-review"
     
-    if !request.user.is_authenticated:
+    if not request.user.is_authenticated:
         redirect('djangoapp/registration.html')
     else:
         if (request.METHOD == "POST"):
