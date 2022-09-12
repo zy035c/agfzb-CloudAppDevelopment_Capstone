@@ -3,6 +3,10 @@ import json
 # import related models here
 from .models import CarDealer
 from requests.auth import HTTPBasicAuth
+from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
+from ibm_watson import NaturalLanguageUnderstandingV1
+from ibm_watson.natural_language_understanding_v1 import Features, SentimentOptions
+import time
 
 # Create a `get_request` to make HTTP GET requests
 # e.g., response = requests.get(url, params=params, headers={'Content-Type': 'application/json'},
@@ -123,7 +127,7 @@ def analyze_review_sentiments(text):
     authenticator = IAMAuthenticator(api_key) 
     natural_language_understanding = NaturalLanguageUnderstandingV1(version='2021-08-01',authenticator=authenticator) 
     natural_language_understanding.set_service_url(url) 
-    response = natural_language_understanding.analyze(text, 
+    response = natural_language_understanding.analyze(text=text+"hello hello hello", 
         features=Features(sentiment=SentimentOptions(targets=[]))).get_result()
     label = json.dumps(response, indent=2)
     label = response['sentiment']['document']['label'] 
