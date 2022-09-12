@@ -92,19 +92,25 @@ def get_dealer_reviews_from_cf(url, dealer_Id):
     json_result = get_request(url, dealerId=dealer_Id)
     if json_result:
         reviews = json_result["entries"]
-        for review in dealers:
+        for review in reviews:
             # dealer_doc = dealer
             review_obj = DealerReview(
-                dealership = dealer_doc["dealership"],
-                name = dealer_doc["name"],
-                purchase = dealer_doc["purchase"],
-                id_ = dealer_doc["id"],
-                review = dealer_doc["review"], 
-                purchase_date = dealer_doc["purchase_date"],
-                car_make = dealer_doc["car_make"],
-                car_model = dealer_doc["car_model"],
-                car_year = dealer_doc["car_year"],
+                dealership = review["dealership"],
+                name = review["name"],
+                purchase = review["purchase"],
+                review = review["review"], 
             )
+            if "id" in review:
+                review_obj.id_ = review["id"]
+            if "purchase_date" in review:
+                review_obj.purchase_date = review["purchase_date"]
+            if "car_make" in review:
+                review_obj.car_make = review["car_make"]
+            if "car_model" in review:
+                review_obj.car_model = review["car_model"]
+            if "car_year" in review:
+                review_obj.car_year = review["car_year"]
+          
             review_obj.sentiment = analyze_review_sentiments(review_obj.review)
             results.append(review_obj)
     return results
