@@ -91,7 +91,7 @@ def registration_request(request):
 def get_dealerships(request):
     context = {}
     if request.method == "GET":
-        url = "https://eu-gb.functions.appdomain.cloud/api/v1/web/coursera-1c4_capstone-eu/dealership-package/get-dealership.json"
+        url = "https://us-east.functions.appdomain.cloud/api/v1/web/coursera-1c4_coursera-us-east/dealership-package/get-dealership.json"
         # Get dealers from the URL
         dealerships = get_dealers_from_cf(url)
         # Concat all dealer's short name
@@ -104,7 +104,7 @@ def get_dealerships(request):
 def get_dealer_details(request, dealer_id):
     context = {}
     
-    url = "https://eu-gb.functions.appdomain.cloud/api/v1/web/coursera-1c4_capstone-eu/dealership-package/get-review.json"
+    url = "https://us-east.functions.appdomain.cloud/api/v1/web/coursera-1c4_coursera-us-east/dealership-package/review"
     reviews = get_dealer_reviews_from_cf(url, dealer_id)
     context['review_list'] = reviews
     render(request, 'djangoapp/dealer_details.html', context) # also sentiment?
