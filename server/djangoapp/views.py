@@ -9,15 +9,14 @@ from django.contrib import messages
 from datetime import datetime
 import logging
 import json
-from .restapis import get_dealer_reviews_from_cf, post_request, get_dealers_from_cf
+from .restapis import get_dealer_reviews_from_cf, post_request, get_dealers_from_cf, get_dealer_by_id_from_cf
 from .models import CarDealer, CarMake, CarModel, DealerReview
+from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 
 # Get an instance of a logger
 logger = logging.getLogger(__name__)
 
-
 # Create your views here.
-
 
 # Create an `about` view to render a static about page
 def about(request):
@@ -34,6 +33,7 @@ def contact(request):
 # Create a `login_request` view to handle sign in request
 def login_request(request):
     context = {}
+    
     if request.method == "POST":
         username = request.POST['username']
         password = request.POST['psw']
@@ -42,18 +42,19 @@ def login_request(request):
         if user is not None:
             # if valid
             login(request, user)
-            return redirect('djangoapp/index.html')
+            print("login post")
+            return redirect('djangoapp:index')
         else:
-            return render(request, 'djangoapp/index.html', context)
+            return render(request, 'djangoapp:index', context)
     else:
-        return render(request, 'djangoapp/index.html', context)
+        return render(request, 'djangoapp:index', context)
 
 
 # Create a `logout_request` view to handle sign out request
 def logout_request(request):
     print("Log out the user `{}`".format(request.user.username))
     logout(user)
-    return redirect('djangoapp/index.html')
+    return redirect('djangoapp:index')
 
 
 # Create a `registration_request` view to handle sign up request
@@ -83,15 +84,15 @@ def registration_request(request):
             )
             # log in the user
             login(request, user)
-            return redirect('djangoapp/index.html')
+            return redirect('djangoapp:index')
         else:
-            return render(request, 'djangoapp/registration.html', context)
+            return render(request, 'djangoapp:registration', context)
 
 # Update the `get_dealerships` view to render the index page with a list of dealerships
 def get_dealerships(request):
     context = {}
     if request.method == "GET":
-        url = "https://us-east.functions.appdomain.cloud/api/v1/web/coursera-1c4_coursera-us-east/dealership-package/get-dealership.json"
+        url = "https://us-east.functions.appdomain.cloud/api/v1/web/coursera-1c4_coursera-us-east/dealership-package/dealership"
         # Get dealers from the URL
         dealerships = get_dealers_from_cf(url)
         # Concat all dealer's short name
@@ -103,11 +104,17 @@ def get_dealerships(request):
 # Create a `get_dealer_details` view to render the reviews of a dealer
 def get_dealer_details(request, dealer_id):
     context = {}
-    
+    dealerships = get_dealer_by_id_from_cf(
+        url="https://us-east.functions.appdomain.cloud/api/v1/web/coursera-1c4_coursera-us-east/dealership-package/dealership", 
+        dealerId=dealer_id
+    )
+    context["dealer_name"] = dealerships[0].name
+    context["dealer_id"] = dealer_id
+
     url = "https://us-east.functions.appdomain.cloud/api/v1/web/coursera-1c4_coursera-us-east/dealership-package/review"
     reviews = get_dealer_reviews_from_cf(url, dealer_id)
     context['review_list'] = reviews
-    render(request, 'djangoapp/dealer_details.html', context) # also sentiment?
+    return render(request, 'djangoapp/dealer_details.html', context) # also sentiment?
 
     
 # Create a `add_review` view to submit a review
@@ -118,7 +125,7 @@ def add_review(request, dealer_id):
     if not request.user.is_authenticated:
         redirect('djangoapp/registration.html')
     else:
-        if request.METHOD == "POST":
+        if request.method == "POST":
             review = dict()
             review["time"] = datetime.utcnow().isoformat()
             review["dealership"] = dealer_id
@@ -139,8 +146,8 @@ def add_review(request, dealer_id):
             print(response)
             return redirect("djangoapp:dealer_details", dealer_id)
         # this redirect will be routed to get_dealer_detailers() above
-        elif request.METHOD == "GET":
+        elif request.method == "GET":
             cars = CarModel.objects.filter(id=dealer_id)
             print(cars)
             context["cars"] = cars
-            return render(request, 'djangoapp/add_review.html', context)
+            return render(request, 'djangoapp:add_review', context)

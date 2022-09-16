@@ -6,6 +6,7 @@ from requests.auth import HTTPBasicAuth
 from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 from ibm_watson import NaturalLanguageUnderstandingV1
 from ibm_watson.natural_language_understanding_v1 import Features, SentimentOptions
+from .models import CarDealer, CarMake, CarModel, DealerReview
 import time
 
 # Create a `get_request` to make HTTP GET requests
@@ -50,8 +51,9 @@ def get_dealers_from_cf(url, **kwargs):
     results = []
     json_result = get_request(url)
     if json_result:
-        dealers = json_result["data"]
+        dealers = json_result
         for dealer_doc in dealers:
+            dealer_doc = dealer_doc['doc']
             dealer_obj = CarDealer(
                 address = dealer_doc["address"],
                 city = dealer_doc["city"],
@@ -72,7 +74,7 @@ def get_dealer_by_id_from_cf(url, dealerId):
     for dealer_obj in get_dealers_from_cf(url):
         if dealer_obj.id_ == dealerId:
             results.append(dealer_obj)
-    return result
+    return results
 
 # Create a get_dealer_reviews_from_cf method to get reviews by dealer id from a cloud function
 # - Call get_request() with specified arguments
@@ -81,15 +83,18 @@ def get_dealer_reviews_from_cf(url, dealer_Id):
     results = []
     json_result = get_request(url, dealer_id=dealer_Id)
     if json_result:
-        reviews = json_result["entries"]
+        reviews = json_result['data']['docs']
+        
         for review in reviews:
             # dealer_doc = dealer
+            # print("review", review, "\n")
             review_obj = DealerReview(
                 dealership = review["dealership"],
                 name = review["name"],
                 purchase = review["purchase"],
                 review = review["review"], 
             )
+
             if "id" in review:
                 review_obj.id_ = review["id"]
             if "purchase_date" in review:
@@ -108,13 +113,16 @@ def get_dealer_reviews_from_cf(url, dealer_Id):
 # Create an `analyze_review_sentiments` method to call Watson NLU and analyze text
 def analyze_review_sentiments(text):
     params = dict()
-    url = "https://api.us-east.natural-language-understanding.watson.cloud.ibm.com/instances/5b5d04bf-2b6e-4bdc-b714-1b848d031245"
-    api_key = "ysEVtjUvwAz7k95vINBOPwJpvarIiijqThYtfkoepnLX"
+    url = "https://api.us-east.natural-language-understanding.watson.cloud.ibm.com/instances/c0d43f9b-0004-4eee-8179-6ccdc6880a23"
+    api_key = "26Dw9hZ3cApLaIlEYQvxY4oMOHtiD1exkZqKUqnDCCgN"
     authenticator = IAMAuthenticator(api_key) 
     natural_language_understanding = NaturalLanguageUnderstandingV1(version='2021-08-01',authenticator=authenticator) 
     natural_language_understanding.set_service_url(url) 
-    response = natural_language_understanding.analyze(text=text+"hello hello hello", 
-        features=Features(sentiment=SentimentOptions(targets=[]))).get_result()
+    print("NLU text", text)
+    text = text+"Hello Hello Hello"
+    sentiment=SentimentOptions(targets=[text])
+    response = natural_language_understanding.analyze(text=text, 
+        features=Features(sentiment=sentiment)).get_result()
     label = json.dumps(response, indent=2)
     label = response['sentiment']['document']['label'] 
     return label
