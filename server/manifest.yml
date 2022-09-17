@@ -1,11 +1,11 @@
   applications:
   - name: zyccapstone
     routes:
-      - route: zyccapstone.eu-gb.mybluemix.net
+      - route: zyccapstone.us-east.mybluemix.net
     memory: 128M
     buildpack: python_buildpack
   - name: zyccapstone-nginx
     routes:
-      - route: zyccapstone.eu-gb.mybluemix.net/static
+      - route: zyccapstone.us-east.mybluemix.net/static
     memory: 128M
     buildpack: staticfile_buildpack
