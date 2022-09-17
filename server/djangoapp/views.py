@@ -22,13 +22,13 @@ logger = logging.getLogger(__name__)
 def about(request):
     context = {}
     if request.method == "GET":
-        return render(request, 'djangoapp/about.html', context)
+        return render(request, 'djangoapp:about', context)
 
 # Create a `contact` view to return a static contact page
 def contact(request):
     context = {}
     if request.method == "GET":
-        return render(request, 'djangoapp/contact.html', context)
+        return render(request, 'djangoapp:contact', context)
 
 # Create a `login_request` view to handle sign in request
 def login_request(request):
@@ -62,7 +62,7 @@ def registration_request(request):
     context = {}
     if request.method == 'GET':
         # print("here!!!")
-        return render(request, 'djangoapp/registration.html', context)
+        return render(request, 'djangoapp:registration', context)
     elif request.method == 'POST':
         username = request.POST['username']
         password = request.POST['pwd']
@@ -147,7 +147,7 @@ def add_review(request, dealer_id):
             return redirect("djangoapp:dealer_details", dealer_id)
         # this redirect will be routed to get_dealer_detailers() above
         elif request.method == "GET":
-            cars = CarModel.objects.filter(id=dealer_id)
+            cars = CarModel.objects.filter(dealer_id=dealer_id)
             print(cars)
             context["cars"] = cars
-            return render(request, 'djangoapp:add_review', context)
+            return render(request, 'djangoapp/add_review.html', context)

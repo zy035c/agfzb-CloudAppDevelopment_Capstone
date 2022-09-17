@@ -12,8 +12,8 @@ import json
 # - Any other fields you would like to include in car make model
 # - __str__ method to print a car make object
 class CarMake(models.Model):
-    name = models.CharField(null=False, max_length=20, default='', primary_key=True)
-    description = models.CharField(null=False, max_length=2000, default='')
+    name = models.CharField(null=False, max_length=100, default='undefined')
+    description = models.CharField(max_length=2000, null=True)
 
     def __str__(self):
         return self.name + "\n" + self.description 
@@ -29,18 +29,18 @@ class CarMake(models.Model):
 class CarModel(models.Model):
     make = models.ForeignKey(CarMake, null=True, on_delete=models.CASCADE)
     name = models.CharField(null=False, max_length=20, default='')
-    dealer_id = models.IntegerField()
+    dealer_id = models.IntegerField(default=1, primary_key=True)
 
-    Sedan = 'Sedan'
+    SEDAN = 'Sedan'
     SUV = 'SUV'
-    Wagon = 'Wagon'
+    WAGON = 'Wagon'
     type_choices = [
-        (Sedan, 'Sedan'),
+        (SEDAN, 'Sedan'),
         (SUV, 'SUV'),
-        (Wagon, 'Wagon'),
+        (WAGON, 'Wagon'),
     ]
 
-    car_type = models.CharField(null=False, max_length=20, choices=type_choices, default=Wagon)
+    car_type = models.CharField(null=False, max_length=20, choices=type_choices, default=WAGON)
     year = models.DateField(null=True)
 
     def __str__(self):

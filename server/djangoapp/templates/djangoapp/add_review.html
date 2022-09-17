@@ -48,7 +48,7 @@
     </nav>
     <div class="container-fluid">
         <h3>Add a review about <b>{{dealer.full_name}}</b></h3>
-        <form action="{% url 'djangoapp:add_review' dealer.id%}" method="POST">
+        <form action="{% url 'djangoapp:add_review' dealer.id %}" method="POST">
             <div class="form-group">
                   <div class="mb-3">
                       <label for="content"><b>Enter the review content: </b></label>
